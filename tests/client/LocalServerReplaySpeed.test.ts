@@ -122,20 +122,15 @@ describe("LocalServer replay speed", () => {
       () => {},
     );
     server.start();
+    const speed = () => (server as any).replaySpeedMultiplier;
 
     bus.emit(new GameSpeedUpIntentEvent());
-    expect((server as any).replaySpeedMultiplier).toBe(
-      ReplaySpeedMultiplier.oneAndHalf,
-    );
+    expect(speed()).toBe(ReplaySpeedMultiplier.oneAndHalf);
 
     bus.emit(new GameSpeedUpIntentEvent());
-    expect((server as any).replaySpeedMultiplier).toBe(
-      ReplaySpeedMultiplier.fast,
-    );
+    expect(speed()).toBe(ReplaySpeedMultiplier.fast);
 
     bus.emit(new GameSpeedDownIntentEvent());
-    expect((server as any).replaySpeedMultiplier).toBe(
-      ReplaySpeedMultiplier.oneAndHalf,
-    );
+    expect(speed()).toBe(ReplaySpeedMultiplier.oneAndHalf);
   });
 });
