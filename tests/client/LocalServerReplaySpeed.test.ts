@@ -18,7 +18,11 @@ vi.mock("src/client/ClientEnv", () => ({
   },
 }));
 
-import { ReplaySpeedChangeEvent } from "../../src/client/InputHandler";
+import {
+  GameSpeedDownIntentEvent,
+  GameSpeedUpIntentEvent,
+  ReplaySpeedChangeEvent,
+} from "../../src/client/InputHandler";
 import { LocalServer } from "../../src/client/LocalServer";
 import { ReplaySpeedMultiplier } from "../../src/client/utilities/ReplaySpeedMultiplier";
 
@@ -99,5 +103,39 @@ describe("LocalServer replay speed", () => {
     // The 2x interval multiplier must roughly halve the cadence.
     expect(turns).toBeGreaterThan(0);
     expect(turns).toBeLessThan(atNormalSpeed);
+  });
+
+  it("cycles through 1.5x between normal and fast speed", () => {
+    const bus = new EventBus();
+    server = new LocalServer(
+      {
+        gameID: "gameID12",
+        playerName: "TestUser",
+        playerClanTag: null,
+        gameStartInfo: makeGameStartInfo(),
+      } as any,
+      false,
+      bus,
+    );
+    server.updateCallback(
+      () => {},
+      () => {},
+    );
+    server.start();
+
+    bus.emit(new GameSpeedUpIntentEvent());
+    expect((server as any).replaySpeedMultiplier).toBe(
+      ReplaySpeedMultiplier.oneAndHalf,
+    );
+
+    bus.emit(new GameSpeedUpIntentEvent());
+    expect((server as any).replaySpeedMultiplier).toBe(
+      ReplaySpeedMultiplier.fast,
+    );
+
+    bus.emit(new GameSpeedDownIntentEvent());
+    expect((server as any).replaySpeedMultiplier).toBe(
+      ReplaySpeedMultiplier.oneAndHalf,
+    );
   });
 });
