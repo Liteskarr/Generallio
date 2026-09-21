@@ -18,7 +18,10 @@ vi.mock("src/client/ClientEnv", () => ({
   },
 }));
 
-import { ReplaySpeedChangeEvent } from "../../src/client/InputHandler";
+import {
+  IncomingLandAttackEvent,
+  ReplaySpeedChangeEvent,
+} from "../../src/client/InputHandler";
 import { LocalServer } from "../../src/client/LocalServer";
 import { ReplaySpeedMultiplier } from "../../src/client/utilities/ReplaySpeedMultiplier";
 
@@ -99,5 +102,57 @@ describe("LocalServer replay speed", () => {
     // The 2x interval multiplier must roughly halve the cadence.
     expect(turns).toBeGreaterThan(0);
     expect(turns).toBeLessThan(atNormalSpeed);
+  });
+
+  it("returns accelerated singleplayer games to normal speed on a land attack", () => {
+    const bus = new EventBus();
+    server = new LocalServer(
+      {
+        gameID: "gameID12",
+        playerName: "TestUser",
+        playerClanTag: null,
+        gameStartInfo: makeGameStartInfo(),
+      } as any,
+      false,
+      bus,
+    );
+    server.updateCallback(
+      () => {},
+      () => {},
+    );
+    server.start();
+
+    bus.emit(new ReplaySpeedChangeEvent(ReplaySpeedMultiplier.fastest));
+    bus.emit(new IncomingLandAttackEvent());
+
+    expect((server as any).replaySpeedMultiplier).toBe(
+      ReplaySpeedMultiplier.normal,
+    );
+  });
+
+  it("does not speed up a slowed game on a land attack", () => {
+    const bus = new EventBus();
+    server = new LocalServer(
+      {
+        gameID: "gameID12",
+        playerName: "TestUser",
+        playerClanTag: null,
+        gameStartInfo: makeGameStartInfo(),
+      } as any,
+      false,
+      bus,
+    );
+    server.updateCallback(
+      () => {},
+      () => {},
+    );
+    server.start();
+
+    bus.emit(new ReplaySpeedChangeEvent(ReplaySpeedMultiplier.slow));
+    bus.emit(new IncomingLandAttackEvent());
+
+    expect((server as any).replaySpeedMultiplier).toBe(
+      ReplaySpeedMultiplier.slow,
+    );
   });
 });

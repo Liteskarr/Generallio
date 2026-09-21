@@ -107,6 +107,25 @@ describe("Attack", () => {
     expect(attacker.outgoingAttacks()[0].troops()).toBeLessThan(90);
   });
 
+  test("reports land attacks on players but not boat attacks", () => {
+    game.addExecution(new AttackExecution(100, attacker, defender.id()));
+
+    const landUpdates = game.executeNextTick();
+    expect(landUpdates[GameUpdateType.LandAttack]).toEqual([
+      {
+        type: GameUpdateType.LandAttack,
+        targetID: defender.id(),
+      },
+    ]);
+
+    game.addExecution(
+      new AttackExecution(100, attacker, defender.id(), attackerSpawn),
+    );
+
+    const boatUpdates = game.executeNextTick();
+    expect(boatUpdates[GameUpdateType.LandAttack]).toEqual([]);
+  });
+
   test("Nuke reduce attacking boat troop count", async () => {
     constructionExecution(game, defender, 1, 1, UnitType.MissileSilo);
     expect(defender.units(UnitType.MissileSilo)).toHaveLength(1);

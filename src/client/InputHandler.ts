@@ -172,6 +172,8 @@ export class ReplaySpeedChangeEvent implements GameEvent {
   constructor(public readonly replaySpeedMultiplier: ReplaySpeedMultiplier) {}
 }
 
+export class IncomingLandAttackEvent implements GameEvent {}
+
 export class TogglePauseIntentEvent implements GameEvent {}
 
 export class GameSpeedUpIntentEvent implements GameEvent {}

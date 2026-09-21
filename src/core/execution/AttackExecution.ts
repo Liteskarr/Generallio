@@ -14,6 +14,7 @@ import {
   UnitType,
 } from "../game/Game";
 import { GameMap, TileRef } from "../game/GameMap";
+import { GameUpdateType } from "../game/GameUpdates";
 import { PseudoRandom } from "../PseudoRandom";
 import { assertNever } from "../Util";
 import { FlatBinaryHeap } from "./utils/FlatBinaryHeap"; // adjust path if needed
@@ -170,6 +171,13 @@ export class AttackExecution implements Execution {
     // would measure one click, and would count an attack that cancelled out
     // and never landed.
     this.mg.stats().attackMaxIncoming(this.target, this.attack.troops());
+
+    if (this.sourceTile === null && this.target.isPlayer()) {
+      this.mg.addUpdate({
+        type: GameUpdateType.LandAttack,
+        targetID: this.target.id(),
+      });
+    }
 
     if (this.target.isPlayer()) {
       const difficulty = this.mg.config().gameConfig().difficulty;
