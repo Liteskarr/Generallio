@@ -108,7 +108,7 @@ import {
   joinLobby,
   LobbyConfig,
 } from "../../src/client/ClientGameRunner";
-import { IncomingLandAttackEvent } from "../../src/client/InputHandler";
+import { IncomingNationLandAttackEvent } from "../../src/client/InputHandler";
 import { SendHashEvent } from "../../src/client/Transport";
 import { reloadForUpdate } from "../../src/client/Utils";
 import { loadTerrainMap } from "../../src/core/game/TerrainMapLoader";
@@ -301,23 +301,23 @@ describe("ClientGameRunner in-game messages", () => {
     expect(gameView.update).toHaveBeenCalled();
   });
 
-  it("emits an event when the local player receives a land attack", () => {
+  it("emits an event when the local player receives a nation land attack", () => {
     const { gameView, emitSpy, workerCallback } = makeStartedRunner(true);
     (gameView as any).myPlayer = () => ({ id: () => "local-player" });
 
     workerCallback({
       updates: {
         [GameUpdateType.Hash]: [],
-        [GameUpdateType.LandAttack]: [
+        [GameUpdateType.NationLandAttack]: [
           {
-            type: GameUpdateType.LandAttack,
+            type: GameUpdateType.NationLandAttack,
             targetID: "local-player",
           },
         ],
       },
     });
 
-    expect(emitSpy).toHaveBeenCalledWith(new IncomingLandAttackEvent());
+    expect(emitSpy).toHaveBeenCalledWith(new IncomingNationLandAttackEvent());
   });
 
   it("shows the crash modal and stops on a worker error update", () => {

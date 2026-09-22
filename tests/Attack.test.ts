@@ -107,23 +107,42 @@ describe("Attack", () => {
     expect(attacker.outgoingAttacks()[0].troops()).toBeLessThan(90);
   });
 
-  test("reports land attacks on players but not boat attacks", () => {
-    game.addExecution(new AttackExecution(100, attacker, defender.id()));
+  test("reports nation land attacks but not tribe or boat attacks", () => {
+    const nationInfo = new PlayerInfo(
+      "nation",
+      PlayerType.Nation,
+      null,
+      "nation_id",
+    );
+    const nation = addPlayerToGame(nationInfo, game, game.ref(15, 0));
+    game.executeNextTick();
+    game.executeNextTick();
+
+    game.addExecution(new AttackExecution(100, nation, defender.id()));
 
     const landUpdates = game.executeNextTick();
-    expect(landUpdates[GameUpdateType.LandAttack]).toEqual([
+    expect(landUpdates[GameUpdateType.NationLandAttack]).toEqual([
       {
-        type: GameUpdateType.LandAttack,
+        type: GameUpdateType.NationLandAttack,
         targetID: defender.id(),
       },
     ]);
 
+    const tribeInfo = new PlayerInfo("tribe", PlayerType.Bot, null, "tribe_id");
+    const tribe = addPlayerToGame(tribeInfo, game, game.ref(15, 15));
+    game.executeNextTick();
+    game.executeNextTick();
+    game.addExecution(new AttackExecution(100, tribe, defender.id()));
+
+    const tribeUpdates = game.executeNextTick();
+    expect(tribeUpdates[GameUpdateType.NationLandAttack]).toEqual([]);
+
     game.addExecution(
-      new AttackExecution(100, attacker, defender.id(), attackerSpawn),
+      new AttackExecution(100, nation, defender.id(), game.ref(15, 0)),
     );
 
     const boatUpdates = game.executeNextTick();
-    expect(boatUpdates[GameUpdateType.LandAttack]).toEqual([]);
+    expect(boatUpdates[GameUpdateType.NationLandAttack]).toEqual([]);
   });
 
   test("Nuke reduce attacking boat troop count", async () => {

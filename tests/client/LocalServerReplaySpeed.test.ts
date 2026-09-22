@@ -19,7 +19,7 @@ vi.mock("src/client/ClientEnv", () => ({
 }));
 
 import {
-  IncomingLandAttackEvent,
+  IncomingNationLandAttackEvent,
   ReplaySpeedChangeEvent,
 } from "../../src/client/InputHandler";
 import { LocalServer } from "../../src/client/LocalServer";
@@ -104,7 +104,7 @@ describe("LocalServer replay speed", () => {
     expect(turns).toBeLessThan(atNormalSpeed);
   });
 
-  it("returns accelerated singleplayer games to normal speed on a land attack", () => {
+  it("returns accelerated singleplayer games to normal speed on a nation land attack", () => {
     const bus = new EventBus();
     server = new LocalServer(
       {
@@ -123,14 +123,14 @@ describe("LocalServer replay speed", () => {
     server.start();
 
     bus.emit(new ReplaySpeedChangeEvent(ReplaySpeedMultiplier.fastest));
-    bus.emit(new IncomingLandAttackEvent());
+    bus.emit(new IncomingNationLandAttackEvent());
 
     expect((server as any).replaySpeedMultiplier).toBe(
       ReplaySpeedMultiplier.normal,
     );
   });
 
-  it("does not speed up a slowed game on a land attack", () => {
+  it("does not speed up a slowed game on a nation land attack", () => {
     const bus = new EventBus();
     server = new LocalServer(
       {
@@ -149,7 +149,7 @@ describe("LocalServer replay speed", () => {
     server.start();
 
     bus.emit(new ReplaySpeedChangeEvent(ReplaySpeedMultiplier.slow));
-    bus.emit(new IncomingLandAttackEvent());
+    bus.emit(new IncomingNationLandAttackEvent());
 
     expect((server as any).replaySpeedMultiplier).toBe(
       ReplaySpeedMultiplier.slow,

@@ -25,7 +25,7 @@ import { LobbyConfig } from "./ClientGameRunner";
 import {
   GameSpeedDownIntentEvent,
   GameSpeedUpIntentEvent,
-  IncomingLandAttackEvent,
+  IncomingNationLandAttackEvent,
   ReplaySpeedChangeEvent,
 } from "./InputHandler";
 import {
@@ -113,7 +113,7 @@ export class LocalServer {
     });
 
     if (!this.isReplay) {
-      this.eventBus.on(IncomingLandAttackEvent, () => {
+      this.eventBus.on(IncomingNationLandAttackEvent, () => {
         if (this.replaySpeedMultiplier >= ReplaySpeedMultiplier.normal) {
           return;
         }

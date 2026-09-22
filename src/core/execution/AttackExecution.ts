@@ -172,9 +172,13 @@ export class AttackExecution implements Execution {
     // and never landed.
     this.mg.stats().attackMaxIncoming(this.target, this.attack.troops());
 
-    if (this.sourceTile === null && this.target.isPlayer()) {
+    if (
+      this.sourceTile === null &&
+      this.target.isPlayer() &&
+      this._owner.type() === PlayerType.Nation
+    ) {
       this.mg.addUpdate({
-        type: GameUpdateType.LandAttack,
+        type: GameUpdateType.NationLandAttack,
         targetID: this.target.id(),
       });
     }

@@ -106,7 +106,7 @@ export enum GameUpdateType {
   SpawnPhaseEnd,
   GamePaused,
   DonateEvent,
-  LandAttack,
+  NationLandAttack,
 }
 
 export type GameUpdate =
@@ -133,10 +133,10 @@ export type GameUpdate =
   | SpawnPhaseEndUpdate
   | GamePausedUpdate
   | DonateEventUpdate
-  | LandAttackUpdate;
+  | NationLandAttackUpdate;
 
-export interface LandAttackUpdate {
-  type: GameUpdateType.LandAttack;
+export interface NationLandAttackUpdate {
+  type: GameUpdateType.NationLandAttack;
   targetID: PlayerID;
 }
 

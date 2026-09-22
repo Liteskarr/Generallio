@@ -43,7 +43,7 @@ import {
   DoGroundAttackEvent,
   DoRequestAllianceEvent,
   DoRetaliateAttackEvent,
-  IncomingLandAttackEvent,
+  IncomingNationLandAttackEvent,
   InputHandler,
   MouseMoveEvent,
   MouseUpEvent,
@@ -1011,11 +1011,11 @@ export class ClientGameRunner {
       const myPlayerID = this.gameView.myPlayer()?.id();
       if (
         myPlayerID !== undefined &&
-        gu.updates[GameUpdateType.LandAttack]?.some(
+        gu.updates[GameUpdateType.NationLandAttack]?.some(
           (attack) => attack.targetID === myPlayerID,
         )
       ) {
-        this.eventBus.emit(new IncomingLandAttackEvent());
+        this.eventBus.emit(new IncomingNationLandAttackEvent());
       }
       this.webglBuilder?.update(this.gameView);
       this.renderer.tick();
