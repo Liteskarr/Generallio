@@ -25,6 +25,7 @@ import { LobbyConfig } from "./ClientGameRunner";
 import {
   GameSpeedDownIntentEvent,
   GameSpeedUpIntentEvent,
+  IncomingNationLandAttackEvent,
   ReplaySpeedChangeEvent,
 } from "./InputHandler";
 import {
@@ -113,6 +114,16 @@ export class LocalServer {
     });
 
     if (!this.isReplay) {
+      this.eventBus.on(IncomingNationLandAttackEvent, () => {
+        if (this.replaySpeedMultiplier >= ReplaySpeedMultiplier.normal) {
+          return;
+        }
+        this.replaySpeedMultiplier = ReplaySpeedMultiplier.normal;
+        this.eventBus.emit(
+          new ReplaySpeedChangeEvent(this.replaySpeedMultiplier),
+        );
+      });
+
       this.eventBus.on(GameSpeedUpIntentEvent, () => {
         const idx = SPEED_ORDER.indexOf(this.replaySpeedMultiplier);
         if (idx < 0 || idx >= SPEED_ORDER.length - 1) return;
