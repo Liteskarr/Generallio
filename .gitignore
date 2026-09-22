@@ -1,6 +1,7 @@
 build/
 node_modules
 .worktrees/
+.tickets/
 out/
 static/
 coverage/

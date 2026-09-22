@@ -2226,7 +2226,7 @@
     "game_speed_down": "Game Speed Down",
     "game_speed_down_desc": "Cycle to previous game speed. Single player only.",
     "game_speed_up": "Game Speed Up",
-    "game_speed_up_desc": "Cycle to next game speed (0.5, 1, 2, max). Single player only.",
+    "game_speed_up_desc": "Cycle to next game speed (0.5, 1, 1.5, 2, max). Single player only.",
     "go_to_player_desc": "Toggle zooming in on the player in the beginning of a game.",
     "go_to_player_label": "Go to player on start",
     "graphics_preset_desc": "Choose the preset look for the map. Fine-tune or make your own in the in-game graphics settings.",

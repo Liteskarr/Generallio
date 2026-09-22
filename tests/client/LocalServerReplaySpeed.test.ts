@@ -19,6 +19,8 @@ vi.mock("src/client/ClientEnv", () => ({
 }));
 
 import {
+  GameSpeedDownIntentEvent,
+  GameSpeedUpIntentEvent,
   IncomingNationLandAttackEvent,
   ReplaySpeedChangeEvent,
 } from "../../src/client/InputHandler";
@@ -154,5 +156,34 @@ describe("LocalServer replay speed", () => {
     expect((server as any).replaySpeedMultiplier).toBe(
       ReplaySpeedMultiplier.slow,
     );
+  });
+
+  it("cycles through 1.5x between normal and fast speed", () => {
+    const bus = new EventBus();
+    server = new LocalServer(
+      {
+        gameID: "gameID12",
+        playerName: "TestUser",
+        playerClanTag: null,
+        gameStartInfo: makeGameStartInfo(),
+      } as any,
+      false,
+      bus,
+    );
+    server.updateCallback(
+      () => {},
+      () => {},
+    );
+    server.start();
+    const speed = () => (server as any).replaySpeedMultiplier;
+
+    bus.emit(new GameSpeedUpIntentEvent());
+    expect(speed()).toBe(ReplaySpeedMultiplier.oneAndHalf);
+
+    bus.emit(new GameSpeedUpIntentEvent());
+    expect(speed()).toBe(ReplaySpeedMultiplier.fast);
+
+    bus.emit(new GameSpeedDownIntentEvent());
+    expect(speed()).toBe(ReplaySpeedMultiplier.oneAndHalf);
   });
 });
